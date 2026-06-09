@@ -28,3 +28,6 @@ COM3
 
 !ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-09 10:41:44.806
 !MESSAGE port: COM3
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-06-09 11:48:16.381
+!MESSAGE Indexed '02_HAL_UART_Uppercase_Echo' (22 sources, 144 headers) in 1.56 sec: 12,555 declarations; 53,010 references; 3 unresolved inclusions; 26 syntax errors; 171 unresolved names (0.26%)
