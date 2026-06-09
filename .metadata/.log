@@ -1,0 +1,30 @@
+!SESSION 2026-06-09 10:11:06.402 -----------------------------------------------
+eclipse.buildId=Version 2.1.1
+java.version=21.0.9
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-06-09 10:11:22.118
+!MESSAGE Log4j2 initialized with config file C:\Users\priel\OneDrive\Desktop\STM32_HAL_Timers_CAN_RTC_Course\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-06-09 10:11:25.119
+!MESSAGE Started RMI Server, listening on port 41338
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-09 10:11:25.828
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-09 10:11:25.829
+!MESSAGE port: 
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-06-09 10:14:59.087
+!MESSAGE Indexed '01_HAL_UART_HelloWorld' (22 sources, 144 headers) in 2.66 sec: 12,555 declarations; 53,010 references; 3 unresolved inclusions; 26 syntax errors; 171 unresolved names (0.26%)
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-09 10:41:44.805
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM3
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-09 10:41:44.806
+!MESSAGE port: COM3
