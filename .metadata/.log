@@ -450,3 +450,6 @@ COM3
 
 !ENTRY org.eclipse.cdt.core 1 0 2026-06-10 17:57:59.817
 !MESSAGE Indexed '05_HSE_SYSCLK_8Mhz' (21 sources, 58 headers) in 1.16 sec: 8,407 declarations; 34,660 references; 32 unresolved inclusions; 1,301 syntax errors; 6,614 unresolved names (13%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-06-10 19:06:28.537
+!MESSAGE Indexed '06_PLL_SYSCLK_64MHz' (40 sources, 146 headers) in 1.56 sec: 13,764 declarations; 67,302 references; 9 unresolved inclusions; 356 syntax errors; 1,433 unresolved names (1.7%)
