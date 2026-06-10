@@ -8,18 +8,58 @@ static void UART2_Init(void);
 /* Peripheral handles */
 UART_HandleTypeDef huart2;
 
+#define RX_BUFFER_SIZE 100
+
 int main(void){
 	  HAL_Init();
 
 	  GPIO_Init();
 	  UART2_Init();
 
-	  char msg[] = "Hello from STM32G071RB UART2\r\n";
+	  uint8_t rxByte = 0;
+	  uint8_t rxBuffer[RX_BUFFER_SIZE];
+	  uint8_t index = 0;
 
 	  while (1){
-		  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-		  HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
-		  HAL_Delay(1000);
+	      HAL_UART_Receive(&huart2, &rxByte, 1, HAL_MAX_DELAY);
+
+	      // If Enter was received
+	      if (rxByte == '\r' || rxByte == '\n'){
+	          if (index == 0){
+	              continue;
+	          }
+
+	          rxBuffer[index] = '\0';
+
+	          char newline[] = "\r\n";
+
+	          HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), HAL_MAX_DELAY);
+
+	          // Send the modified string back to the PC
+	          HAL_UART_Transmit(&huart2, rxBuffer, index, HAL_MAX_DELAY);
+
+	          HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), HAL_MAX_DELAY);
+
+	          index = 0;
+	      }
+
+	      // If there is still space in the buffer
+	      else if (index < RX_BUFFER_SIZE - 1){
+	          if (rxByte >= 'a' && rxByte <= 'z'){
+	              rxByte = rxByte - ('a' - 'A');
+	          }
+
+	          rxBuffer[index] = rxByte;
+	          index++;
+	      }
+
+	      // Buffer overflow
+	      else {
+	          index = 0;
+
+	          char overflowMsg[] = "\r\nBuffer overflow. Try a shorter string.\r\n";
+	          HAL_UART_Transmit(&huart2, (uint8_t*)overflowMsg, strlen(overflowMsg), HAL_MAX_DELAY);
+	      }
 	  }
 }
 
