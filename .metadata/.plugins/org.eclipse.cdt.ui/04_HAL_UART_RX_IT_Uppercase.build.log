@@ -1,0 +1,10 @@
+13:37:25 **** Incremental Build of configuration Debug for project 04_HAL_UART_RX_IT_Uppercase ****
+make -j12 all 
+arm-none-eabi-size  04_HAL_UART_RX_IT_Uppercase.elf 
+   text	   data	    bss	    dec	    hex	filename
+  12928	     12	   1828	  14768	   39b0	04_HAL_UART_RX_IT_Uppercase.elf
+Finished building: default.size.stdout
+ 
+
+13:37:25 Build Finished. 0 errors, 0 warnings. (took 280ms)
+

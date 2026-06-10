@@ -1,0 +1,190 @@
+#include "main.h"
+#include <string.h>
+#include <stdio.h>
+
+/* Function prototype */
+static void GPIO_Init(void);
+static void UART2_Init(void);
+static void SystemClock_HSI_16MHz_Config(void);
+static void Print_Clock_Info(void);
+
+/* Peripheral handles */
+UART_HandleTypeDef huart2;
+
+#define RX_BUFFER_SIZE 100
+
+/* UART RX variables used by the interrupt callback */
+uint8_t rxByte = 0;
+uint8_t rxBuffer[RX_BUFFER_SIZE];
+uint8_t rxIndex = 0;
+
+int main(void){
+	  HAL_Init();
+	    /*
+	     * Configure the system clock for this lesson:
+	     * HSI = 16 MHz
+	     * SYSCLK = 16 MHz
+	     * HCLK = 4 MHz
+	     * PCLK = 2 MHz
+	     */
+	  SystemClock_HSI_16MHz_Config();
+
+	  GPIO_Init();
+	  UART2_Init();
+
+	    /* Print the clock values after the new clock configuration */
+	    Print_Clock_Info();
+
+	  if (HAL_UART_Receive_IT(&huart2, &rxByte, 1) != HAL_OK){
+		  Error_Handler();
+	  }
+
+	  while (1){
+		  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+		  HAL_Delay(500);
+	  }
+}
+
+static void GPIO_Init(void){
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+	GPIO_InitStruct.Pin = GPIO_PIN_5;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+}
+
+static void UART2_Init(void){
+	huart2.Instance = USART2;
+
+	huart2.Init.BaudRate = 115200;
+	huart2.Init.WordLength = UART_WORDLENGTH_8B;
+	huart2.Init.StopBits = UART_STOPBITS_1;
+	huart2.Init.Parity = UART_PARITY_NONE;
+	huart2.Init.Mode = UART_MODE_TX_RX;
+	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+	huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+	huart2.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+	huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+
+	if(HAL_UART_Init(&huart2) != HAL_OK){
+		Error_Handler();
+	}
+}
+
+static void SystemClock_HSI_16MHz_Config(void){
+    /*
+     * Configure HSI16.
+     *
+     * HSI is the internal 16 MHz oscillator.
+     * It is enabled by default after reset, but we configure it explicitly
+     * here so the exercise still uses HAL_RCC_OscConfig().
+     */
+
+	RCC_OscInitTypeDef osc_init = {0};
+	RCC_ClkInitTypeDef clk_init = {0};
+
+    osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+    osc_init.HSIState = RCC_HSI_ON;
+    osc_init.HSIDiv = RCC_HSI_DIV1;
+    osc_init.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+	osc_init.PLL.PLLState = RCC_PLL_OFF;
+
+	if (HAL_RCC_OscConfig(&osc_init) != HAL_OK){
+		Error_Handler();
+	}
+
+    /*
+     * Clock tree target:
+     *
+     * HSI = 16 MHz
+     * SYSCLK = HSI = 16 MHz
+     * HCLK = SYSCLK / 4 = 4 MHz
+     * PCLK = HCLK / 2 = 2 MHz
+     */
+	clk_init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1;
+	clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+	clk_init.AHBCLKDivider = RCC_SYSCLK_DIV4;
+	clk_init.APB1CLKDivider = RCC_SYSCLK_DIV2;
+
+	if (HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_0) != HAL_OK){
+		Error_Handler();
+	}
+
+    /* After SYSCLK is switched to HSE, HSI is no longer needed */
+    __HAL_RCC_HSI_DISABLE();
+}
+
+static void Print_Clock_Info(void){
+	char msg[100];
+
+    /* Print SYSCLK  */
+	memset(msg, 0, sizeof(msg));
+	sprintf(msg, "SYSCLK: %lu Hz\r\n", HAL_RCC_GetSysClockFreq());
+	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+
+    /* Print HCLK  */
+	memset(msg, 0, sizeof(msg));
+	sprintf(msg, "HCLK: %lu Hz\r\n", HAL_RCC_GetSysClockFreq());
+	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+
+    /* Print PCLK1  */
+	memset(msg, 0, sizeof(msg));
+	sprintf(msg, "PCLK1: %lu Hz\r\n", HAL_RCC_GetSysClockFreq());
+	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	if (huart->Instance == USART2){
+	      // If Enter was received
+	      if (rxByte == '\r' || rxByte == '\n'){
+	          rxBuffer[rxIndex] = '\0';
+
+	          char newline[] = "\r\n";
+
+	          HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), HAL_MAX_DELAY);
+
+	          // Send the modified string back to the PC
+	          HAL_UART_Transmit(&huart2, rxBuffer, rxIndex, HAL_MAX_DELAY);
+
+	          HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), HAL_MAX_DELAY);
+
+	          rxIndex = 0;
+	      }
+
+	      // If there is still space in the buffer
+	      else if (rxIndex < RX_BUFFER_SIZE - 1){
+	          if (rxByte >= 'a' && rxByte <= 'z'){
+	              rxByte = rxByte - ('a' - 'A');
+	          }
+
+	          rxBuffer[rxIndex] = rxByte;
+	          rxIndex++;
+	      }
+
+	      // Buffer overflow
+	      else {
+	    	  rxIndex = 0;
+
+	          char overflowMsg[] = "\r\nBuffer overflow. Try a shorter string.\r\n";
+	          HAL_UART_Transmit(&huart2, (uint8_t*)overflowMsg, strlen(overflowMsg), HAL_MAX_DELAY);
+	      }
+	      HAL_UART_Receive_IT(&huart2, &rxByte, 1);
+	}
+}
+
+void Error_Handler(void){
+	  /* Disable interrupts and stay here if a serious error happens */
+	  __disable_irq();
+
+	  while (1){
+
+	  }
+}
+

@@ -1,0 +1,16 @@
+#ifndef __MAIN_H
+#define __MAIN_H
+
+#ifndef __cplusplus
+extern "C" {
+#endif
+
+#include "stm32g0xx_hal.h"
+
+void Error_Handler(void);
+
+#ifndef __cplusplus
+}
+#endif
+
+#endif

@@ -1,0 +1,17 @@
+#include "main.h"
+
+int main(void){
+	  /*
+	   * HAL_Init() initializes the HAL library.
+	   *
+	   * In bare-metal terms:
+	   * this is not a peripheral init like USART/GPIO.
+	   * It prepares the HAL infrastructure, especially the time base
+	   * that HAL uses for delays and timeouts.
+	   */
+	  HAL_Init();
+
+	  while (1){
+
+	  }
+}

@@ -1,7 +1,7 @@
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
-configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:01_HAL_UART_HelloWorld,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:02_HAL_UART_Uppercase_Echo
+configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:01_HAL_UART_HelloWorld,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:02_HAL_UART_Uppercase_Echo,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:03_HAL_UART_Manual_Init_Flow (1),org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:03_HAL_UART_Manual_Init_Flow,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:04_HAL_UART_RX_IT_Uppercase,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:05_HSE_SYSCLK_8Mhz
 eclipse.preferences.version=1
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:01_HAL_UART_HelloWorld/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:01_HAL_UART_HelloWorld/activeLaunchTarget=null\:---
