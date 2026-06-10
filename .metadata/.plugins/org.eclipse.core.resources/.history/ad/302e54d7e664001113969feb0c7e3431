@@ -78,14 +78,13 @@ static void UART2_Init(void){
 }
 
 static void SystemClock_PLL_64MHz_Config(void){
-	/*
-	 * Configure the system clock for this lesson:
-	 * HSI16 = 16 MHz
-	 * PLLRCLK = 64 MHz
-	 * SYSCLK = 64 MHz
-	 * HCLK = 64 MHz
-	 * PCLK1 = 64 MHz
-	 */
+    /*
+     * Configure HSI16.
+     *
+     * HSI is the internal 16 MHz oscillator.
+     * It is enabled by default after reset, but we configure it explicitly
+     * here so the exercise still uses HAL_RCC_OscConfig().
+     */
 
 	RCC_OscInitTypeDef osc_init = {0};
 	RCC_ClkInitTypeDef clk_init = {0};
@@ -94,31 +93,27 @@ static void SystemClock_PLL_64MHz_Config(void){
     osc_init.HSIState = RCC_HSI_ON;
     osc_init.HSIDiv = RCC_HSI_DIV1;
     osc_init.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-
-	osc_init.PLL.PLLState = RCC_PLL_ON;
-	osc_init.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-	osc_init.PLL.PLLM = RCC_PLLM_DIV1;
-    osc_init.PLL.PLLN = 8;
-    osc_init.PLL.PLLR = RCC_PLLR_DIV2;
+	osc_init.PLL.PLLState = RCC_PLL_OFF;
 
 	if (HAL_RCC_OscConfig(&osc_init) != HAL_OK){
 		Error_Handler();
 	}
 
     /*
-     * Select PLLCLK as SYSCLK.
+     * Clock tree target:
      *
-     * SYSCLK = 64 MHz
-     * HCLK   = SYSCLK / 1 = 64 MHz
-     * PCLK1  = HCLK / 1   = 64 MHz
+     * HSI = 16 MHz
+     * SYSCLK = HSI = 16 MHz
+     * HCLK = SYSCLK / 4 = 4 MHz
+     * PCLK = HCLK / 2 = 2 MHz
      */
 	clk_init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1;
-	clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-	clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	clk_init.APB1CLKDivider = RCC_HCLK_DIV1;
+	clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+	clk_init.AHBCLKDivider = RCC_SYSCLK_DIV4;
+	clk_init.APB1CLKDivider = RCC_HCLK_DIV2;
 
     /* HCLK is only 4 MHz, so 0 wait states are enough for Flash */
-	if (HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_2) != HAL_OK){
+	if (HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_0) != HAL_OK){
 		Error_Handler();
 	}
 }

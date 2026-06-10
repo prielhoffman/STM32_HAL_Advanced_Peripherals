@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := 05_HSE_SYSCLK_8Mhz
+BUILD_ARTIFACT_NAME := 06_PLL_SYSCLK_64MHz
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-05_HSE_SYSCLK_8Mhz.elf \
+06_PLL_SYSCLK_64MHz.elf \
 
 MAP_FILES += \
-05_HSE_SYSCLK_8Mhz.map \
+06_PLL_SYSCLK_64MHz.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-05_HSE_SYSCLK_8Mhz.list \
+06_PLL_SYSCLK_64MHz.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: 05_HSE_SYSCLK_8Mhz.elf secondary-outputs
+main-build: 06_PLL_SYSCLK_64MHz.elf secondary-outputs
 
 # Tool invocations
-05_HSE_SYSCLK_8Mhz.elf 05_HSE_SYSCLK_8Mhz.map: $(OBJS) $(USER_OBJS) C:\Users\priel\OneDrive\Desktop\STM32_HAL_Timers_CAN_RTC_Course\05_HSE_SYSCLK_8Mhz\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "05_HSE_SYSCLK_8Mhz.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\priel\OneDrive\Desktop\STM32_HAL_Timers_CAN_RTC_Course\05_HSE_SYSCLK_8Mhz\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="05_HSE_SYSCLK_8Mhz.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+06_PLL_SYSCLK_64MHz.elf 06_PLL_SYSCLK_64MHz.map: $(OBJS) $(USER_OBJS) C:\Users\priel\OneDrive\Desktop\STM32_HAL_Timers_CAN_RTC_Course\06_PLL_SYSCLK_64MHz\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "06_PLL_SYSCLK_64MHz.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\priel\OneDrive\Desktop\STM32_HAL_Timers_CAN_RTC_Course\06_PLL_SYSCLK_64MHz\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="06_PLL_SYSCLK_64MHz.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-05_HSE_SYSCLK_8Mhz.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "05_HSE_SYSCLK_8Mhz.list"
+06_PLL_SYSCLK_64MHz.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "06_PLL_SYSCLK_64MHz.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) 05_HSE_SYSCLK_8Mhz.elf 05_HSE_SYSCLK_8Mhz.list 05_HSE_SYSCLK_8Mhz.map default.size.stdout
+	-$(RM) 06_PLL_SYSCLK_64MHz.elf 06_PLL_SYSCLK_64MHz.list 06_PLL_SYSCLK_64MHz.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

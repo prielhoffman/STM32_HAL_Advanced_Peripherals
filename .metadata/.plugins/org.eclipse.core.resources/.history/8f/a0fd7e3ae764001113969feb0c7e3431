@@ -113,12 +113,12 @@ static void SystemClock_PLL_64MHz_Config(void){
      * PCLK1  = HCLK / 1   = 64 MHz
      */
 	clk_init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1;
-	clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-	clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	clk_init.APB1CLKDivider = RCC_HCLK_DIV1;
+	clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+	clk_init.AHBCLKDivider = RCC_SYSCLK_DIV4;
+	clk_init.APB1CLKDivider = RCC_HCLK_DIV2;
 
     /* HCLK is only 4 MHz, so 0 wait states are enough for Flash */
-	if (HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_2) != HAL_OK){
+	if (HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_0) != HAL_OK){
 		Error_Handler();
 	}
 }
