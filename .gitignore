@@ -1,0 +1,14 @@
+# Eclipse / STM32CubeIDE metadata
+.metadata/
+.project
+.cproject
+.settings/
+
+# Build outputs
+**/Debug/
+**/Release/
+*.elf
+*.list
+*.map
+*.o
+*.su

@@ -60,8 +60,8 @@ all: main-build
 main-build: 07_TIM6_TimeBase_100ms.elf secondary-outputs
 
 # Tool invocations
-07_TIM6_TimeBase_100ms.elf 07_TIM6_TimeBase_100ms.map: $(OBJS) $(USER_OBJS) C:\Users\priel\OneDrive\Desktop\STM32_HAL_Timers_CAN_RTC_Course\07_TIM6_TimeBase_100ms\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "07_TIM6_TimeBase_100ms.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\priel\OneDrive\Desktop\STM32_HAL_Timers_CAN_RTC_Course\07_TIM6_TimeBase_100ms\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="07_TIM6_TimeBase_100ms.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+07_TIM6_TimeBase_100ms.elf 07_TIM6_TimeBase_100ms.map: $(OBJS) $(USER_OBJS) C:\Users\priel\OneDrive\Desktop\Embedded\Embedded_Projects\STM32_HAL_Timers_CAN_RTC_Course\07_TIM6_TimeBase_100ms\STM32G071RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "07_TIM6_TimeBase_100ms.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\priel\OneDrive\Desktop\Embedded\Embedded_Projects\STM32_HAL_Timers_CAN_RTC_Course\07_TIM6_TimeBase_100ms\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="07_TIM6_TimeBase_100ms.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

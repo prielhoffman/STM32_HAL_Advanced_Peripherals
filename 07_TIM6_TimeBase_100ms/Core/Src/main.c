@@ -10,13 +10,6 @@ TIM_HandleTypeDef htim6;
 
 int main(void){
 	  HAL_Init();
-	    /*
-	     * Configure the system clock for this lesson:
-	     * HSI = 16 MHz
-	     * SYSCLK = 16 MHz
-	     * HCLK = 4 MHz
-	     * PCLK = 2 MHz
-	     */
 	  SystemClock_PLL_64MHz_Config();
 
 	  GPIO_Init();

@@ -20,13 +20,14 @@ uint8_t rxIndex = 0;
 
 int main(void){
 	  HAL_Init();
-	    /*
-	     * Configure the system clock for this lesson:
-	     * HSI = 16 MHz
-	     * SYSCLK = 16 MHz
-	     * HCLK = 4 MHz
-	     * PCLK = 2 MHz
-	     */
+	  /*
+	   * Configure the system clock using PLL:
+	   * HSI16 = 16 MHz
+	   * PLLCLK = 64 MHz
+	   * SYSCLK = 64 MHz
+	   * HCLK = 64 MHz
+	   * PCLK1 = 64 MHz
+	   */
 	  SystemClock_PLL_64MHz_Config();
 
 	  GPIO_Init();
@@ -117,7 +118,7 @@ static void SystemClock_PLL_64MHz_Config(void){
 	clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	clk_init.APB1CLKDivider = RCC_HCLK_DIV1;
 
-    /* HCLK is only 4 MHz, so 0 wait states are enough for Flash */
+	/* HCLK is 64 MHz, so Flash latency must match the STM32G071 flash latency table. */
 	if (HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_2) != HAL_OK){
 		Error_Handler();
 	}
