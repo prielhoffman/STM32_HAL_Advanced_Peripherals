@@ -4,6 +4,7 @@
 static void GPIO_Init(void);
 static void SystemClock_PLL_64MHz_Config(void);
 static void TIMER2_Init(void);
+static void LSE_Configuration(void);
 
 /* Peripheral handles */
 TIM_HandleTypeDef htimer2;
@@ -14,6 +15,7 @@ int main(void){
 
 	  GPIO_Init();
 	  TIMER2_Init();
+	  LSE_Configuration();
 
 	  if (HAL_TIM_IC_Start_IT(&htimer2, TIM_CHANNEL_1) != HAL_OK){
 	      Error_Handler();
@@ -59,22 +61,19 @@ static void TIMER2_Init(void){
 }
 
 static void SystemClock_PLL_64MHz_Config(void){
-	/*
-	 * Configure the system clock for this lesson:
-	 * HSI16 = 16 MHz
-	 * PLLRCLK = 64 MHz
-	 * SYSCLK = 64 MHz
-	 * HCLK = 64 MHz
-	 * PCLK1 = 64 MHz
-	 */
-
 	RCC_OscInitTypeDef osc_init = {0};
 	RCC_ClkInitTypeDef clk_init = {0};
 
-    osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	HAL_PWR_EnableBkUpAccess();
+
+	// Update the oscillator configuration to enable both HSI and LSE
+    osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSI| RCC_OSCILLATORTYPE_LSE;
     osc_init.HSIState = RCC_HSI_ON;
     osc_init.HSIDiv = RCC_HSI_DIV1;
     osc_init.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+
+    // Turn on the Low Speed External (LSE) crystal
+	osc_init.LSEState = RCC_LSE_ON;
 
 	osc_init.PLL.PLLState = RCC_PLL_ON;
 	osc_init.PLL.PLLSource = RCC_PLLSOURCE_HSI;
@@ -121,4 +120,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
          */
 		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 	}
+}
+
+static void LSE_Configuration(void){
+    // Output the LSE clock onto MCO1 pin (PA8) with no division
+	HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCOSOURCE_LSE, RCC_MCO_DIV1);
 }
