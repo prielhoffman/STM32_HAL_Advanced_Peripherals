@@ -599,3 +599,11 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.cdt.core 1 0 2026-06-24 17:07:37.085
 !MESSAGE Indexed '08_TIM2_InputCapture_1' (24 sources, 149 headers) in 3.37 sec: 14,846 declarations; 73,880 references; 7 unresolved inclusions; 327 syntax errors; 1,502 unresolved names (1.7%)
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-24 18:05:42.736
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM3
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-24 18:05:42.740
+!MESSAGE port: COM3
