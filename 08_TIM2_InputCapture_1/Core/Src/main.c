@@ -3,7 +3,7 @@
 /* Function prototype */
 static void GPIO_Init(void);
 static void SystemClock_PLL_64MHz_Config(void);
-static void TIM6_Init(void);
+static void TIMER2_Init(void);
 
 /* Peripheral handles */
 TIM_HandleTypeDef htimer2;
@@ -15,7 +15,7 @@ int main(void){
 	  GPIO_Init();
 	  TIMER2_Init();
 
-	  if (HAL_TIM_Base_Start_IT(&htim6) != HAL_OK){
+	  if (HAL_TIM_IC_Start_IT(&htimer2, TIM_CHANNEL_1) != HAL_OK){
 	      Error_Handler();
 	  }
 
@@ -37,15 +37,24 @@ static void GPIO_Init(void){
 }
 
 static void TIMER2_Init(void){
-	htim6.Instance = TIM2;
+	htimer2.Instance = TIM2;
+	htimer2.Init.Prescaler = 0;
+	htimer2.Init.Period = 0xFFFFFFFF;
+	htimer2.Init.CounterMode = TIM_COUNTERMODE_UP;
 
-	htim6.Init.Prescaler = 0;
-	htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-	htim6.Init.Period = 0xFFFFFFFF;
-	htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-
-	if(HAL_TIM_IC_Init(&htim6) != HAL_OK){
+	if(HAL_TIM_IC_Init(&htimer2) != HAL_OK){
 		Error_Handler();
+	}
+
+	TIM_IC_InitTypeDef tim2IC_Config = {0};
+
+	tim2IC_Config.ICPolarity = TIM_ICPOLARITY_RISING;
+	tim2IC_Config.ICSelection = TIM_ICSELECTION_DIRECTTI;
+	tim2IC_Config.ICPrescaler = TIM_ICPSC_DIV1;
+	tim2IC_Config.ICFilter = 0;
+
+	if (HAL_TIM_IC_ConfigChannel(&htimer2, &tim2IC_Config, TIM_CHANNEL_1) != HAL_OK){
+	Error_Handler();
 	}
 }
 
