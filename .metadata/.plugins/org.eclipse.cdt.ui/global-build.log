@@ -1,13 +1,6 @@
-15:14:44 **** Incremental Build of configuration Debug for project 08_TIM2_InputCapture_1 ****
+15:24:59 **** Incremental Build of configuration Debug for project 08_TIM2_InputCapture_1 ****
 make -j12 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G071xx -c -I../Core/Inc -I../Drivers/STM32G0xx_HAL_Driver/Inc -I../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:65:54: warning: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'double' [-Wformat=]
-   65 |                         printf("Measured LSE Freq: %lu Hz | Ticks Diff: %lu\r\n", user_signal_freq, capture_difference);
-      |                                                    ~~^                            ~~~~~~~~~~~~~~~~
-      |                                                      |                            |
-      |                                                      long unsigned int            double
-      |                                                    %f
 arm-none-eabi-gcc -o "08_TIM2_InputCapture_1.elf" @"objects.list"   -mcpu=cortex-m0plus -T"C:\Users\priel\OneDrive\Desktop\Embedded\Embedded_Projects\STM32_HAL_Timers_CAN_RTC_Course\08_TIM2_InputCapture_1\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="08_TIM2_InputCapture_1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: 08_TIM2_InputCapture_1.elf
  
@@ -19,10 +12,24 @@ Finished building: default.size.stdout
  
 Finished building: 08_TIM2_InputCapture_1.list
  
-15:14:57 **** Incremental Build of configuration Debug for project 08_TIM2_InputCapture_1 ****
+15:25:04 **** Incremental Build of configuration Debug for project 08_TIM2_InputCapture_1 ****
 make -j12 all 
 arm-none-eabi-size  08_TIM2_InputCapture_1.elf 
    text	   data	    bss	    dec	    hex	filename
   20072	    104	   2144	  22320	   5730	08_TIM2_InputCapture_1.elf
 Finished building: default.size.stdout
+ 
+15:26:28 **** Incremental Build of configuration Debug for project 08_TIM2_InputCapture_1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m0plus -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G071xx -c -I../Core/Inc -I../Drivers/STM32G0xx_HAL_Driver/Inc -I../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G0xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "08_TIM2_InputCapture_1.elf" @"objects.list"   -mcpu=cortex-m0plus -T"C:\Users\priel\OneDrive\Desktop\Embedded\Embedded_Projects\STM32_HAL_Timers_CAN_RTC_Course\08_TIM2_InputCapture_1\STM32G071RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="08_TIM2_InputCapture_1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: 08_TIM2_InputCapture_1.elf
+ 
+arm-none-eabi-size  08_TIM2_InputCapture_1.elf 
+arm-none-eabi-objdump -h -S 08_TIM2_InputCapture_1.elf  > "08_TIM2_InputCapture_1.list"
+   text	   data	    bss	    dec	    hex	filename
+  23188	    104	   2144	  25436	   635c	08_TIM2_InputCapture_1.elf
+Finished building: default.size.stdout
+ 
+Finished building: 08_TIM2_InputCapture_1.list
  

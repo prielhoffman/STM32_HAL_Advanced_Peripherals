@@ -62,7 +62,10 @@ int main(void){
 			/* Frequency is 1 / Time Period (result in Hz) */
 			user_signal_freq = 1.0 / user_signal_time_period;
 
-			printf("Measured LSE Freq: %lu Hz | Ticks Diff: %lu\r\n", user_signal_freq, capture_difference);
+			uint32_t freq_whole = (uint32_t)user_signal_freq;
+			uint32_t freq_fraction = (uint32_t)((user_signal_freq - freq_whole) * 100);
+
+			printf("Measured LSE Freq: %lu.%02lu Hz | Ticks Diff: %lu\r\n", freq_whole, freq_fraction, capture_difference);
 
 			/* Reset the flag to unlock the Callback for the next capture sequence */
 			is_capture_done = 0;
@@ -131,13 +134,10 @@ static void SystemClock_PLL_64MHz_Config(void){
 
 	HAL_PWR_EnableBkUpAccess();
 
-	// Update the oscillator configuration to enable both HSI and LSE
-    osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSI| RCC_OSCILLATORTYPE_LSE;
+    osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSE;
     osc_init.HSIState = RCC_HSI_ON;
     osc_init.HSIDiv = RCC_HSI_DIV1;
     osc_init.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-
-    // Turn on the Low Speed External (LSE) crystal
 	osc_init.LSEState = RCC_LSE_ON;
 
 	osc_init.PLL.PLLState = RCC_PLL_ON;
@@ -150,23 +150,48 @@ static void SystemClock_PLL_64MHz_Config(void){
 		Error_Handler();
 	}
 
-    /*
-     * Select PLLCLK as SYSCLK.
-     *
-     * SYSCLK = 64 MHz
-     * HCLK   = SYSCLK / 1 = 64 MHz
-     * PCLK1  = HCLK / 1   = 64 MHz
-     */
 	clk_init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1;
 	clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	clk_init.APB1CLKDivider = RCC_HCLK_DIV1;
 
-    /* HCLK is only 4 MHz, so 0 wait states are enough for Flash */
 	if (HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_2) != HAL_OK){
 		Error_Handler();
 	}
 }
+
+/*
+static void SystemClock_HSE_PLL_64MHz_Config(void){
+	RCC_OscInitTypeDef osc_init = {0};
+	RCC_ClkInitTypeDef clk_init = {0};
+
+	HAL_PWR_EnableBkUpAccess();
+
+    // כאן נגדיר את ה-HSE כשהמרצה יבקש לעדכן את הפרמטרים שלו
+    osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
+    osc_init.HSEState = RCC_HSE_ON;
+	osc_init.LSEState = RCC_LSE_ON;
+
+	osc_init.PLL.PLLState = RCC_PLL_ON;
+	osc_init.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	osc_init.PLL.PLLM = RCC_PLLM_DIV1;
+    osc_init.PLL.PLLN = 8;
+    osc_init.PLL.PLLR = RCC_PLLR_DIV2;
+
+	if (HAL_RCC_OscConfig(&osc_init) != HAL_OK){
+		Error_Handler();
+	}
+
+	clk_init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1;
+	clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	clk_init.APB1CLKDivider = RCC_HCLK_DIV1;
+
+	if (HAL_RCC_ClockConfig(&clk_init, FLASH_LATENCY_2) != HAL_OK){
+		Error_Handler();
+	}
+}
+*/
 
 void Error_Handler(void){
 	  /* Disable interrupts and stay here if a serious error happens */
