@@ -153,16 +153,15 @@ void Error_Handler(void){
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
 	if (htim->Instance == TIM2){
-		/* Process only if the previous capture was handled */
+		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
 		if (is_capture_done == 0){
 			if (capture_count == 0){
-				/* First rising edge detected: save counter value */
-				input_captures[0] = HAL_TIM_GetChannelState(htim, TIM_CHANNEL_1);
+				input_captures[0] = __HAL_TIM_GET_COMPARE(htim, TIM_CHANNEL_1);
 				capture_count++;
 			}
 			else if (capture_count == 1){
-				/* Second rising edge detected: save counter value */
-				input_captures[1] = HAL_TIM_GetChannelState(htim, TIM_CHANNEL_1);
+				input_captures[1] = __HAL_TIM_GET_COMPARE(htim, TIM_CHANNEL_1);
 				capture_count = 0;
 				is_capture_done = 1;
 			}
