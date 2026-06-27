@@ -625,3 +625,13 @@ COM3
 
 !ENTRY com.st.stm32cube.ide.mcu.debug.launch 2 0 2026-06-26 15:14:07.459
 !MESSAGE Won't launch debug session since we failed to locate the binary.
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-06-26 17:06:24.381
+!MESSAGE Indexed '09_TIM2_OutputCompare_Toggle' (23 sources, 69 headers) in 2.08 sec: 10,357 declarations; 59,676 references; 23 unresolved inclusions; 1,535 syntax errors; 4,459 unresolved names (6%)
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-27 00:59:02.985
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-27 00:59:02.988
+!MESSAGE port: 
