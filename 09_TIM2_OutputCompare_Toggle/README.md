@@ -1,66 +1,58 @@
-# Project 08: TIM2 Input Capture & LSE Measurement
+# STM32G0 - Multi-Channel Signal Generation using Timer Output Compare Toggle
 
-This project demonstrates how to configure **Timer 2 (TIM2) in Input Capture Mode** on the STM32G071RB microcontroller to precisely measure the frequency of the **Low-Speed External (LSE)** crystal oscillator (32.768 kHz).
+This project demonstrates how to generate multiple independent square waves with different frequencies using a single hardware timer (**TIM2**) on an **STM32G071** microcontroller. The implementation utilizes the **Output Compare Toggle** mode combined with hardware interrupts to advance capture-compare registers seamlessly without shifting the phase or blocking the CPU.
 
-The system targets a high-performance configuration with the main system clock running at **64 MHz** via the PLL, outputting real-time capture statistics over UART2 to PuTTY.
+## Theory & Implementation Bridge
 
----
+The system is configured with a core system clock running at **64 MHz**. By setting the Timer Prescaler to `0`, the timer counter (`TIM2_CNT`) increments at the maximum rate of **64,000,000 ticks per second**.
 
-## Project Objectives
-* Configure **TIM2 Channel 1 (PA0)** as an Input Capture peripheral mapped directly to the LSE clock line.
-* Capture consecutive rising edges to compute the delta between timer ticks (`Ticks Diff`).
-* Verify the mathematical relationships between `SYSCLK`, `PCLK1`, and external low-speed signals.
-* Retarget `printf` to **USART2 (PA2/PA3)** to output measurement data.
+### The Core Formula
+To toggle a pin at a specific target frequency ($F_{target}$), the pin must toggle twice per period (once for High-to-Low, once for Low-to-High). The pulse step calculation is:
 
----
+$$\text{Pulse Step} = \frac{F_{timer}}{2 \times F_{target}}$$
 
-## Clock Configuration & Formulas
+Based on this formula, the 4 independent channels are configured as follows:
 
-The microcontroller is driven by the **Internal High-Speed oscillator (HSI)** at 16 MHz, multiplied up to a **64 MHz SYSCLK** using the internal Phase-Locked Loop (PLL). 
+| Channel | GPIO Pin | Target Frequency | Pulse Step (Ticks) | Toggle Interval |
+|:---:|:---:|:---:|:---:|:---:|
+| **CH1** | `PA0` | 500 Hz | **64,000** | 1.000 ms |
+| **CH2** | `PA1` | 1 kHz | **32,000** | 0.500 ms |
+| **CH3** | `PB10` | 2 kHz | **16,000** | 0.250 ms |
+| **CH4** | `PB11` | 4 kHz | **8,000** | 0.125 ms |
 
-Since Timer 2 runs directly on the `PCLK1` bus (undivided 64 MHz) with a prescaler value of `0`, the timer counter frequency is:
 
-$$Timer2\_Freq = \frac{64,000,000\text{ Hz}}{0 + 1} = 64\text{ MHz}$$
-
-The expected number of timer ticks during a single period of the LSE crystal ($32,768\text{ Hz}$) is derived via:
-
-$$\text{Expected Ticks} = \frac{64,000,000\text{ Hz}}{32,768\text{ Hz}} = 1953.125\text{ ticks}$$
 
 ---
 
-## Development Stages & Terminal Logs
+## How It Works inside the Hardware
 
-### Stage 1: Hardware & Direct Logic Verification
-Initially, the hardware captures were checked to confirm that the Callback interrupt (`HAL_TIM_IC_CaptureCallback`) safely captured consecutive pulse intervals.
+1. **Free-Running Counter:** `TIM2_CNT` counts upward continuously from `0` to `0xFFFFFFFF`.
+2. **Hardware Match & Toggle:** When `TIM2_CNT` equals the value stored in a channel's compare register (`TIM2_CCRx`), the microcontroller's hardware **instantly toggles the physical pin** and triggers an interrupt. This guarantees zero jitter because the CPU timing does not affect the waveform generation.
+3. **Interrupt Service Routine (ISR):** In the `HAL_TIM_OC_DelayElapsedCallback` ISR, the CPU reads the precise snapshot of when the match occurred, adds the channel-specific pulse step value, and sets the new target milestone for the next toggle.
 
-![Input Capture Verification](docs/images/lse_input_capture_verification.png)
+```c
+/* Example from main.c - Advancing the target forward in time */
+if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) {
+    ccr_current = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+    __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_1, (ccr_current + pulse1_value));
+}
 
----
+## Logic Analyzer Verification
 
-### Stage 2: The Floating-Point `printf` Pitfall
-When floating-point data was introduced to compute the raw frequency using a standard formatting string (`%lu` instead of float formatting, or enabling `%.2f` without library support), a known embedded library limitation caused memory alignment errors and broken print streams:
+Below is the live capture taken from a Saleae Logic Analyzer validating the outputs:
 
-![Floating-Point Print Issue](docs/images/lse_measurement_with_hsi_error.png)
+![TIM2 Output Compare Waveforms](output_compare_toggle_waves.png)
 
-* **The Fix:** Instead of enabling heavyweight compiler flag parameters like `-u _printf_float` (which drains flash space), the `double` variable was split into two separate raw integer components representing the whole number and fractional values:
-    ```c
-    uint32_t freq_whole = (uint32_t)user_signal_freq;
-    uint32_t freq_fraction = (uint32_t)((user_signal_freq - freq_whole) * 100);
-    printf("Measured LSE Freq: %lu.%02lu Hz\r\n", freq_whole, freq_fraction);
-    ```
-
----
-
-### Stage 3: HSI Thermal Jitter Observations
-Once data printed cleanly, the exact physics of an internal RC oscillator became evident. The system clock generated from the internal **HSI** was subject to small thermal fluctuations, causing the measured tick difference to fluctuate dynamically between **1948 and 1960 ticks**:
-
-![LSE Measurement with HSI Jitter](docs/images/lse_measurement_with_hsi_jitter.png)
-
-* **Key Engineering Takeaway:** While the capture math successfully hovered perfectly around the nominal $\sim32.7\text{ kHz}$ target, the jitter highlighted why internal RC oscillators are insufficient for highly accurate timekeeping compared to crystal-based High-Speed External (**HSE**) components.
+### Analyzing the Waveform Capture:
+* **Channel 0 (`PA0` - 500 Hz):** As shown on the timeline, a single toggle interval (High or Low state) lasts exactly **1 ms** (matching perfectly between the `320 ms` mark and the next `+1 ms` transition line), resulting in a full 2 ms period ($500\text{ Hz}$).
+* **Frequency Scaling:** You can visually confirm that each descending channel is exactly **twice as fast** as the channel above it ($1:2:4:8$ ratio), perfectly tracking the $500\text{ Hz}$, $1\text{ kHz}$, $2\text{ kHz}$, and $4\text{ kHz}$ targets.
+* **Zero CPU Overhead:** The `while(1)` loop in `main()` is entirely empty. The CPU remains completely free for other application tasks while the hardware peripheral generates pristine, highly accurate waveforms.
 
 ---
 
-## Source Architecture
-* `Core/Src/main.c`: Hardware peripherals sequence loop, math logic calculations, and ISR retention blocks.
-* `Core/Src/stm32g0xx_hal_msp.c`: Lower-level pin routing (PA0 AF2 for TIM2, PA2/PA3 for USART2) and clock gating definitions.
-* `Core/Src/stm32g0xx_it.c`: Interrupt service vector bindings passing events into the HAL layer.
+## Peripheral Configuration Specs
+
+* **Microcontroller:** STM32G071 (ARM Cortex-M0+ Architecture)
+* **Timer Peripheral:** TIM2 (32-bit Internal Timer Counter)
+* **Clock Source:** HSI (Internal High-Speed RC Oscillator) via PLL @ 64 MHz
+* **Toolchain:** STM32CubeIDE & HAL Drivers
