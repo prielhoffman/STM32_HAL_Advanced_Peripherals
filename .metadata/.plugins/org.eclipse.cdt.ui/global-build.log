@@ -1,14 +1,14 @@
-12:15:58 **** Incremental Build of configuration Debug for project 09_TIM2_OutputCompare_Toggle ****
+12:11:46 **** Incremental Build of configuration Debug for project 10_timer_OC_PWM1 ****
 make -j12 all 
-arm-none-eabi-size  09_TIM2_OutputCompare_Toggle.elf 
+arm-none-eabi-size  10_timer_OC_PWM1.elf 
    text	   data	    bss	    dec	    hex	filename
-   9224	     28	   1644	  10896	   2a90	09_TIM2_OutputCompare_Toggle.elf
+   8368	     12	   1644	  10024	   2728	10_timer_OC_PWM1.elf
 Finished building: default.size.stdout
  
-12:16:24 **** Incremental Build of configuration Debug for project 09_TIM2_OutputCompare_Toggle ****
+12:11:53 **** Incremental Build of configuration Debug for project 10_timer_OC_PWM1 ****
 make -j12 all 
-arm-none-eabi-size  09_TIM2_OutputCompare_Toggle.elf 
+arm-none-eabi-size  10_timer_OC_PWM1.elf 
    text	   data	    bss	    dec	    hex	filename
-   9224	     28	   1644	  10896	   2a90	09_TIM2_OutputCompare_Toggle.elf
+   8368	     12	   1644	  10024	   2728	10_timer_OC_PWM1.elf
 Finished building: default.size.stdout
  

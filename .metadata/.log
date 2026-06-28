@@ -643,3 +643,21 @@ COM3
 
 !ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-27 12:15:41.189
 !MESSAGE port: COM3
+
+!ENTRY org.eclipse.cdt.core 1 0 2026-06-27 20:01:50.742
+!MESSAGE Indexed '10_timer_OC_PWM1' (23 sources, 116 headers) in 2.8 sec: 12,183 declarations; 67,965 references; 3 unresolved inclusions; 26 syntax errors; 171 unresolved names (0.21%)
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-27 20:30:43.976
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-27 20:30:43.983
+!MESSAGE port: 
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-28 12:11:44.244
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM3
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-06-28 12:11:44.247
+!MESSAGE port: COM3
